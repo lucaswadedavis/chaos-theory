@@ -1,0 +1,63 @@
+<! DOCTYPE html>
+
+<html>
+<head>
+<title>Chaos Theory</title>
+<script type='text/javascript' src='js/raphael.js'></script>
+<script type='text/javascript' src='js/jquery-1.11.1.js'></script>
+<script type='text/javascript' src='js/underscore-1.6.0.js'></script>
+<script type='text/javascript' src='js/zi.js'></script>
+<script type='text/javascript' src='js/davis.js'></script>
+
+<script type='text/javascript'>
+$(document).ready(function(){
+    var d="<div id='canvas'></div>";
+    $("body").html(d);    
+    
+    var b=davis.quickBox();
+    
+    zi.css();
+    
+    var c=new Raphael("canvas");
+    
+    var number_of_vertices = 3;
+    
+    var path=[];
+    var r=Math.min(b.centerX, b.centerY)-10;
+    var theta=90;
+    var color=davis.randomColor();
+    var vertices=[];
+    
+    for (var i=0;i<number_of_vertices;i++){
+        theta+=360/number_of_vertices;
+        var coords=geo.getPoint(b.centerX,b.centerY,r,theta);
+        path.push(coords.x2+" "+coords.y2);
+        vertices.push({x:coords.x2,y:coords.y2});
+    }
+    path="M "+path.join(" L ")+" Z";
+    
+    c.path(path);
+    
+    //and now for the magic
+    var p={
+        x:(b.centerX),
+        y:(b.centerY)
+    };
+    
+    for (var i=0;i<10000;i++){
+        var rv=davis.pick(vertices);
+        np={x:((rv.x+p.x)/2),y:((rv.y+p.y)/2)};
+        p=np;
+        c.circle(p.x,p.y,1).attr({
+            "fill":color,
+            "opacity":0.8,
+            "stroke-width":0   
+        });
+    }
+    
+});
+</script>
+
+</head>
+
+</html>
