@@ -25,13 +25,17 @@ $(document).ready(function(){
         var number_of_vertices= opts.sides || 3;
         var c=opts.context || c;
         var b=opts.bounds || b;
+        var dot_radius=opts.dot_radius || 1;
           
         var path=[];
         var number_of_dots= opts.number_of_dots || 10000;
-        var r=opts.radius || Math.min(b.centerX, b.centerY)-10;
-        var theta=opts.theta || 90;
+        var r=Math.min(b.centerX, b.centerY)-40;
+        if (opts.radius!=undefined){r=opts.radius;}
+        var theta=90;
+        if (opts.theta!=undefined){theta=opts.theta;}
         var color=opts.color || davis.randomColor();
         var vertices=[];
+        var s=[];
         
         for (var i=0;i<number_of_vertices;i++){
             theta+=360/number_of_vertices;
@@ -40,7 +44,7 @@ $(document).ready(function(){
             vertices.push({x:coords.x2,y:coords.y2});
         }
         path="M "+path.join(" L ")+" Z";
-        c.path(path);
+        //c.path(path);
         
         //and now for the magic
         var p={
@@ -52,18 +56,48 @@ $(document).ready(function(){
             var rv=davis.pick(vertices);
             np={x:((rv.x+p.x)/2),y:((rv.y+p.y)/2)};
             p=np;
-            c.circle(p.x,p.y,1).attr({
+            var sc=c.circle(p.x,p.y,dot_radius).attr({
                 "fill":color,
-                "opacity":1,
-                "stroke-width":0   
+                "opacity":0,
+                "stroke-width":0
             });
+            sc.data("xCoord",p.x );
+            sc.data("yCoord",p.y );
+            s.push(sc);
         }
-          
+        return s;
     };
     
+    var opts={
+        color:davis.randomColor(),
+        sides:3,
+        context:c,
+        bounds:b,
+        number_of_dots:3000,
+        dot_radius:0
+    };
+    var s=sierpinski_ngon(opts);
     
-    sierpinski_ngon({sides:3,context:c,bounds:b});
     
+    //reveal;
+    var reveal=function(s){
+        for (var i=0;i<s.length;i++){
+            var coords=geo.getPoint(b.centerX,b.centerY,(Math.min(b.centerX,b.centerY))-20,(i*(3600/s.length))+270);
+            var anim=Raphael.animation({
+                "cx":s[i].data("xCoord"),
+                "cy":s[i].data("yCoord"),
+                "r":3
+            }, 5000, "<>");
+            s[i].attr({"cx":coords.x2,"cy":coords.y2,"r":5,"opacity":1});
+            s[i].animate(anim.delay(i*(Math.floor(50000/s.length))));
+        }
+    };
+    c.circle(b.centerX,b.centerY,0)
+        .attr({"stroke-width":15,"stroke":opts.color,"opacity":0})
+        .animate({"r":Math.min(b.centerX,b.centerY)-20,"opacity":1},1000,"<>",function(){
+            reveal(s);
+            this.animate({"opacity":0},1000,function(){this.remove();});
+        });
 });
 </script>
 
