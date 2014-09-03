@@ -86,9 +86,9 @@ $(document).ready(function(){
             var anim=Raphael.animation({
                 "cx":s[i].data("xCoord"),
                 "cy":s[i].data("yCoord"),
-                "r":3
+                "r":2
             }, 5000, "<>");
-            s[i].attr({"cx":coords.x2,"cy":coords.y2,"r":5,"opacity":1});
+            s[i].attr({"cx":coords.x2,"cy":coords.y2,"r":10,"opacity":1});
             s[i].animate(anim.delay(i*(Math.floor(50000/s.length))));
         }
     };
