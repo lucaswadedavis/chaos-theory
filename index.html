@@ -73,7 +73,7 @@ $(document).ready(function(){
         sides:3,
         context:c,
         bounds:b,
-        number_of_dots:3000,
+        number_of_dots:10000,
         dot_radius:0
     };
     var s=sierpinski_ngon(opts);
@@ -89,7 +89,7 @@ $(document).ready(function(){
                 "r":2
             }, 5000, "<>");
             s[i].attr({"cx":coords.x2,"cy":coords.y2,"r":10,"opacity":1});
-            s[i].animate(anim.delay(i*(Math.floor(50000/s.length))));
+            s[i].animate(anim.delay(i*(Math.floor(100000/s.length))));
         }
     };
     c.circle(b.centerX,b.centerY,0)
